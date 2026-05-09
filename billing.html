@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KodingWala Smart Billing System</title>
+    <link rel="stylesheet" href="billing.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+<body>
+    <a href="office.html" class="back-office-btn">
+        <i class="fas fa-arrow-left"></i> Back to Office
+    </a>
+    
+    <div class="container">
+        <header class="header">
+            <div class="logo">
+                <span class="koding">Koding</span><span class="wala">Wala</span>
+            </div>
+            <h1 class="tagline">Design • Develop • Deliver</h1>
+            <div class="invoice-number-display">
+                Current Invoice: <span id="currentInvoiceNumber">KW-INV-2026-000001</span>
+            </div>
+        </header>
+
+        <div class="main-content">
+            <div class="billing-form">
+                <h2>Create New Invoice</h2>
+                
+                <!-- Client Details -->
+                <div class="client-details">
+                    <h3>Client Details</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Client Name</label>
+                            <input type="text" id="clientName" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Client Type</label>
+                            <select id="clientType" required>
+                                <option value="">Select Type</option>
+                                <option value="Student">Student</option>
+                                <option value="Professional">Professional</option>
+                                <option value="Business Owner">Business Owner</option>
+                                <option value="Startup">Startup</option>
+                                <option value="Freelancer">Freelancer</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label id="businessCollegeLabel">Business Name</label>
+                            <input type="text" id="businessCollegeName">
+                        </div>
+                        <div class="form-group">
+                            <label>Phone Number</label>
+                            <input type="tel" id="phoneNumber" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" id="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Address</label>
+                            <input type="text" id="address">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Project Description</label>
+                        <textarea id="projectDescription"></textarea>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Payment Mode</label>
+                            <select id="paymentMode" required>
+                                <option value="">Select Mode</option>
+                                <option value="Cash">Cash</option>
+                                <option value="PhonePe">PhonePe</option>
+                                <option value="Google Pay">Google Pay</option>
+                                <option value="UPI">UPI</option>
+                                <option value="Bank Transfer">Bank Transfer</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Notes</label>
+                            <textarea id="notes"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Services Selection -->
+                <div class="services-section">
+                    <h3>Select Services</h3>
+                    <div class="service-tabs">
+                        <button class="tab-btn active" data-tab="student">Student Services</button>
+                        <button class="tab-btn" data-tab="business">Business/Professional</button>
+                        <button class="tab-btn" data-tab="govt">Govt Support</button>
+                        <button class="tab-btn" data-tab="ads">Ads</button>
+                        <button class="tab-btn" data-tab="maintenance">Support & Maintenance</button>
+                    </div>
+                    
+                    <div class="service-tab-content">
+                        <div id="student" class="tab-pane active">
+                            <div class="service-grid">
+                                <div class="service-item" data-service="Resume Design" data-price="299">
+                                    <span>Resume Design</span>
+                                    <span>₹299</span>
+                                </div>
+                                <div class="service-item" data-service="PPT Design" data-price="400">
+                                    <span>PPT Design</span>
+                                    <span>₹400</span>
+                                </div>
+                                <div class="service-item" data-service="Portfolio Website" data-price="2000">
+                                    <span>Portfolio Website</span>
+                                    <span>₹2000</span>
+                                </div>
+                                <div class="service-item" data-service="Student Mini Project" data-price="2000">
+                                    <span>Student Mini Project</span>
+                                    <span>₹2000</span>
+                                </div>
+                                <div class="service-item" data-service="AI/ML Project" data-price="2000">
+                                    <span>AI/ML Project</span>
+                                    <span>₹2000</span>
+                                </div>
+                                <div class="service-item" data-service="AI Project" data-price="2000">
+                                    <span>AI Project</span>
+                                    <span>₹2000</span>
+                                </div>
+                                <div class="service-item" data-service="Frontend Project" data-price="2000">
+                                    <span>Frontend Project</span>
+                                    <span>₹2000</span>
+                                </div>
+                                <div class="service-item" data-service="Web Development Project" data-price="2500">
+                                    <span>Web Development Project</span>
+                                    <span>₹2500</span>
+                                </div>
+                                <div class="service-item" data-service="Python Project" data-price="2000">
+                                    <span>Python Project</span>
+                                    <span>₹2000</span>
+                                </div>
+                                <div class="service-item" data-service="Java Project" data-price="2000">
+                                    <span>Java Project</span>
+                                    <span>₹2000</span>
+                                </div>
+                                <div class="service-item" data-service="DBMS Project" data-price="1800">
+                                    <span>DBMS Project</span>
+                                    <span>₹1800</span>
+                                </div>
+                                <div class="service-item" data-service="Final Year Project Documentation" data-price="999">
+                                    <span>Final Year Project Documentation</span>
+                                    <span>₹999</span>
+                                </div>
+                                <div class="service-item" data-service="Project Report" data-price="799">
+                                    <span>Project Report</span>
+                                    <span>₹799</span>
+                                </div>
+                                <div class="service-item" data-service="Internship Certificate Design" data-price="299">
+                                    <span>Internship Certificate Design</span>
+                                    <span>₹299</span>
+                                </div>
+                                <div class="service-item" data-service="LinkedIn Profile Setup" data-price="499">
+                                    <span>LinkedIn Profile Setup</span>
+                                    <span>₹499</span>
+                                </div>
+                                <div class="service-item" data-service="GitHub Profile Setup" data-price="499">
+                                    <span>GitHub Profile Setup</span>
+                                    <span>₹499</span>
+                                </div>
+                                <div class="service-item" data-service="Logo Design" data-price="1000">
+                                    <span>Logo Design</span>
+                                    <span>₹1000</span>
+                                </div>
+                                <div class="service-item" data-service="Landing Page Design" data-price="1500">
+                                    <span>Landing Page Design</span>
+                                    <span>₹1500</span>
+                                </div>
+                                <div class="service-item" data-service="WhatsApp Integration" data-price="1000">
+                                    <span>WhatsApp Integration</span>
+                                    <span>₹1000</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div id="business" class="tab-pane">
+                            <div class="service-grid">
+                                <div class="service-item" data-service="Static Website" data-price="7500">
+                                    <span>Static Website</span>
+                                    <span>₹7500</span>
+                                </div>
+                                <div class="service-item" data-service="Dynamic Website" data-price="25000">
+                                    <span>Dynamic Website</span>
+                                    <span>₹25000</span>
+                                </div>
+                                <div class="service-item" data-service="AI Agents Setup" data-price="6500">
+                                    <span>AI Agents Setup</span>
+                                    <span>₹6500</span>
+                                </div>
+                                <div class="service-item" data-service="Business Portfolio Website" data-price="8500">
+                                    <span>Business Portfolio Website</span>
+                                    <span>₹8500</span>
+                                </div>
+                                <div class="service-item" data-service="Landing Page" data-price="3500">
+                                    <span>Landing Page</span>
+                                    <span>₹3500</span>
+                                </div>
+                                <div class="service-item" data-service="WhatsApp Business Setup" data-price="1000">
+                                    <span>WhatsApp Business Setup</span>
+                                    <span>₹1000</span>
+                                </div>
+                                <div class="service-item" data-service="Google Business Profile Setup" data-price="1500">
+                                    <span>Google Business Profile Setup</span>
+                                    <span>₹1500</span>
+                                </div>
+                                <div class="service-item" data-service="Social Media Page Setup" data-price="1500">
+                                    <span>Social Media Page Setup</span>
+                                    <span>₹1500</span>
+                                </div>
+                                <div class="service-item" data-service="Business Logo Design" data-price="1000">
+                                    <span>Business Logo Design</span>
+                                    <span>₹1000</span>
+                                </div>
+                                <div class="service-item" data-service="Poster Design" data-price="150">
+                                    <span>Poster Design</span>
+                                    <span>₹150</span>
+                                </div>
+                                <div class="service-item" data-service="Reel Editing 60 sec" data-price="500">
+                                    <span>Reel Editing 60 sec</span>
+                                    <span>₹500</span>
+                                </div>
+                                <div class="service-item" data-service="Brochure Design" data-price="999">
+                                    <span>Brochure Design</span>
+                                    <span>₹999</span>
+                                </div>
+                                <div class="service-item" data-service="Menu Card Design" data-price="799">
+                                    <span>Menu Card Design</span>
+                                    <span>₹799</span>
+                                </div>
+                                <div class="service-item" data-service="Business Card Design" data-price="499">
+                                    <span>Business Card Design</span>
+                                    <span>₹499</span>
+                                </div>
+                                <div class="service-item" data-service="SEO" data-price="3500">
+                                    <span>SEO</span>
+                                    <span>₹3500</span>
+                                </div>
+                                <div class="service-item" data-service="Digital Assistance" data-price="5000">
+                                    <span>Digital Assistance</span>
+                                    <span>₹5000</span>
+                                </div>
+                                <div class="service-item" data-service="Digital Support" data-price="3500">
+                                    <span>Digital Support</span>
+                                    <span>₹3500</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div id="govt" class="tab-pane">
+                            <div class="service-grid">
+                                <div class="service-item" data-service="Aadhaar Update Support" data-price="300">
+                                    <span>Aadhaar Update Support</span>
+                                    <span>₹300</span>
+                                </div>
+                                <div class="service-item" data-service="PAN Card Apply Support" data-price="400">
+                                    <span>PAN Card Apply Support</span>
+                                    <span>₹400</span>
+                                </div>
+                                <div class="service-item" data-service="Voter ID Apply Support" data-price="400">
+                                    <span>Voter ID Apply Support</span>
+                                    <span>₹400</span>
+                                </div>
+                                <div class="service-item" data-service="Caste Certificate Support" data-price="500">
+                                    <span>Caste Certificate Support</span>
+                                    <span>₹500</span>
+                                </div>
+                                <div class="service-item" data-service="Income Certificate Support" data-price="500">
+                                    <span>Income Certificate Support</span>
+                                    <span>₹500</span>
+                                </div>
+                                <div class="service-item" data-service="Residence Certificate Support" data-price="500">
+                                    <span>Residence Certificate Support</span>
+                                    <span>₹500</span>
+                                </div>
+                                <div class="service-item" data-service="Ration Card Support" data-price="500">
+                                    <span>Ration Card Support</span>
+                                    <span>₹500</span>
+                                </div>
+                                <div class="service-item" data-service="Passport Appointment Support" data-price="700">
+                                    <span>Passport Appointment Support</span>
+                                    <span>₹700</span>
+                                </div>
+                                <div class="service-item" data-service="Scholarship Form Support" data-price="400">
+                                    <span>Scholarship Form Support</span>
+                                    <span>₹400</span>
+                                </div>
+                                <div class="service-item" data-service="Exam Application Support" data-price="300">
+                                    <span>Exam Application Support</span>
+                                    <span>₹300</span>
+                                </div>
+                                <div class="service-item" data-service="Job Application Support" data-price="300">
+                                    <span>Job Application Support</span>
+                                    <span>₹300</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div id="ads" class="tab-pane">
+                            <div class="service-grid">
+                                <div class="service-item" data-service="WhatsApp Ads" data-price="150" per-day="true">
+                                    <span>WhatsApp Ads</span>
+                                    <span>₹150/day</span>
+                                </div>
+                                <div class="service-item" data-service="Instagram Ads" data-price="200" per-day="true">
+                                    <span>Instagram Ads</span>
+                                    <span>₹200/day</span>
+                                </div>
+                                <div class="service-item" data-service="YouTube Ads" data-price="250" per-day="true">
+                                    <span>YouTube Ads</span>
+                                    <span>₹250/day</span>
+                                </div>
+                                <div class="service-item" data-service="Facebook Ads" data-price="200" per-day="true">
+                                    <span>Facebook Ads</span>
+                                    <span>₹200/day</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div id="maintenance" class="tab-pane">
+                            <div class="service-grid">
+                                <div class="service-item" data-service="Basic Maintenance" data-price="500">
+                                    <span>Basic Maintenance</span>
+                                    <span>₹500</span>
+                                </div>
+                                <div class="service-item" data-service="Advanced Maintenance" data-price="1500">
+                                    <span>Advanced Maintenance</span>
+                                    <span>₹1500</span>
+                                </div>
+                                <div class="service-item" data-service="Premium Maintenance" data-price="3500">
+                                    <span>Premium Maintenance</span>
+                                    <span>₹3500</span>
+                                </div>
+                                <div class="service-item" data-service="SEO Maintenance" data-price="500">
+                                    <span>SEO Maintenance</span>
+                                    <span>₹500</span>
+                                </div>
+                                <div class="service-item" data-service="Digital Assistance Maintenance" data-price="500">
+                                    <span>Digital Assistance Maintenance</span>
+                                    <span>₹500</span>
+                                </div>
+                                <div class="service-item" data-service="Digital Support Maintenance" data-price="500">
+                                    <span>Digital Support Maintenance</span>
+                                    <span>₹500</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Selected Services -->
+                <div class="selected-services">
+                    <h3>Selected Services</h3>
+                    <div id="selectedServicesList" class="services-list">
+                        <p class="no-services">No services selected</p>
+                    </div>
+                </div>
+
+                <!-- Invoice Summary -->
+                <div class="invoice-summary">
+                    <h3>Invoice Summary</h3>
+                    <div class="summary-row">
+                        <label>GST %</label>
+                        <input type="number" id="gstPercentage" value="18" min="0" max="100" step="0.1">
+                    </div>
+                    <div class="summary-row">
+                        <label>Discount %</label>
+                        <input type="number" id="discountPercentage" value="0" min="0" max="100" step="0.1">
+                    </div>
+                    <div class="summary-row">
+                        <label>Advance Paid</label>
+                        <input type="number" id="advancePaid" value="0" min="0">
+                    </div>
+                    <div class="summary-row">
+                        <label>Payment Status</label>
+                        <select id="paymentStatus">
+                            <option value="Pending">Pending</option>
+                            <option value="Partial">Partial</option>
+                            <option value="Paid">Paid</option>
+                        </select>
+                    </div>
+                    <div class="summary-totals">
+                        <div class="total-row">
+                            <span>Subtotal:</span>
+                            <span id="subtotal">₹0</span>
+                        </div>
+                        <div class="total-row">
+                            <span>GST Amount:</span>
+                            <span id="gstAmount">₹0</span>
+                        </div>
+                        <div class="total-row">
+                            <span>Discount:</span>
+                            <span id="discountAmount">₹0</span>
+                        </div>
+                        <div class="total-row">
+                            <span>Grand Total:</span>
+                            <span id="grandTotal">₹0</span>
+                        </div>
+                        <div class="total-row">
+                            <span>Balance Amount:</span>
+                            <span id="balanceAmount">₹0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <button id="newBillBtn" class="btn btn-primary">
+                        <i class="fas fa-file"></i> New Bill
+                    </button>
+                    <button id="checkInvoiceBtn" class="btn btn-primary">
+                        <i class="fas fa-eye"></i> Check Invoice
+                    </button>
+                    <button id="generateInvoiceBtn" class="btn btn-success">
+                        <i class="fas fa-file-invoice"></i> Generate Invoice
+                    </button>
+                    <button id="downloadPdfBtn" class="btn btn-info">
+                        <i class="fas fa-download"></i> Download PDF
+                    </button>
+                    <button id="sendWhatsAppBtn" class="btn btn-whatsapp">
+                        <i class="fab fa-whatsapp"></i> Send on WhatsApp
+                    </button>
+                    <button id="printBtn" class="btn btn-secondary">
+                        <i class="fas fa-print"></i> Print Bill
+                    </button>
+                    <button id="saveBillBtn" class="btn btn-warning">
+                        <i class="fas fa-save"></i> Save Bill
+                    </button>
+                    <button id="clearFormBtn" class="btn btn-danger">
+                        <i class="fas fa-trash"></i> Clear Form
+                    </button>
+                    <button id="viewHistoryBtn" class="btn btn-purple">
+                        <i class="fas fa-history"></i> View History
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bill History Modal -->
+        <div id="billHistoryModal" class="modal">
+            <div class="modal-content">
+                <span class="close-modal">&times;</span>
+                <h2>Bill History</h2>
+                <div class="search-bar">
+                    <input type="text" id="searchBills" placeholder="Search by client name or invoice number...">
+                </div>
+                <div id="billHistoryList" class="bill-history-list">
+                    <!-- Bill history items will be populated here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Invoice Display Modal -->
+        <div id="invoiceModal" class="modal">
+            <div class="modal-content invoice-modal-content">
+                <span class="close-modal">&times;</span>
+                <div id="invoiceDisplay">
+                    <!-- Invoice will be displayed here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Post-Action Modal -->
+        <div id="postActionModal" class="modal">
+            <div class="modal-content post-action-modal-content">
+                <h3>What would you like to do next?</h3>
+                <div class="action-options">
+                    <button id="downloadPdfOption" class="btn btn-info">
+                        <i class="fas fa-download"></i> Download PDF
+                    </button>
+                    <button id="printOption" class="btn btn-secondary">
+                        <i class="fas fa-print"></i> Print Bill
+                    </button>
+                    <button id="sendWhatsAppOption" class="btn btn-whatsapp">
+                        <i class="fab fa-whatsapp"></i> Send on WhatsApp
+                    </button>
+                    <button id="laterOption" class="btn btn-primary">
+                        <i class="fas fa-times"></i> Later
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>Work Together, Grow Together</p>
+        <p><a href="https://kodingwala.site" target="_blank">kodingwala.site</a></p>
+    </footer>
+
+    <script src="billing.js"></script>
+</body>
+</html>

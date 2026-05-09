@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KodingWala Office Workspace</title>
+    <link rel="stylesheet" href="office.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Background -->
+    <div class="background">
+        <div class="grid-pattern"></div>
+        <div class="ambient-glow top-left"></div>
+        <div class="ambient-glow bottom-right"></div>
+    </div>
+
+    <!-- Top Bar -->
+    <header class="top-bar">
+        <div class="logo">
+            <span class="koding">Koding</span><span class="wala">Wala</span>
+        </div>
+        <div class="help-btn" onclick="openHelpCenter()">
+            <i class="fas fa-circle-question"></i> Help & Support
+        </div>
+        <div class="datetime-container">
+            <div class="datetime" id="datetime"></div>
+        </div>
+    </header>
+
+    <!-- Office Status Bar -->
+    <div class="status-bar">
+        <div class="status-item">
+            <i class="fas fa-file-invoice-dollar"></i>
+            <span>Billing Opens: <span id="billing-count-status">0</span></span>
+        </div>
+        <div class="status-item">
+            <i class="fas fa-headset"></i>
+            <span>CRM Opens: <span id="crm-count-status">0</span></span>
+        </div>
+        <div class="status-item">
+            <i class="fas fa-palette"></i>
+            <span>Design Opens: <span id="design-count-status">0</span></span>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <main class="container">
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-content">
+                <div class="hero-icon">
+                    <i class="fas fa-building"></i>
+                </div>
+                <h1>KodingWala Office Workspace</h1>
+                <p>Choose your workspace to continue your operations.</p>
+                <div class="feature-tags">
+                    <span class="tag">Billing</span>
+                    <span class="tag">CRM</span>
+                    <span class="tag">Designs</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Workspace Cards -->
+        <section class="workspace-cards">
+            <div class="card billing-card">
+                <div class="icon-container">
+                    <i class="fas fa-file-invoice-dollar"></i>
+                </div>
+                <h2>Billing System</h2>
+                <p>Create bills, invoices, PDFs, payment records, and billing history.</p>
+                <button class="card-btn" onclick="openWorkspace('Billing', 'billing.html')">
+                    <i class="fas fa-arrow-right"></i> Open Billing
+                </button>
+                <div class="card-footer">
+                    <span><i class="fas fa-circle"></i> Opened <span id="billing-count">0</span> times</span>
+                </div>
+            </div>
+
+            <div class="card crm-card">
+                <div class="icon-container">
+                    <i class="fas fa-headset"></i>
+                </div>
+                <h2>Customer Support CRM</h2>
+                <p>Manage leads, client contacts, follow-ups, and customer support.</p>
+                <button class="card-btn crm-btn" onclick="openWorkspace('CRM', 'kodingwala-crm.html')">
+                    <i class="fas fa-arrow-right"></i> Open CRM
+                </button>
+                <div class="card-footer">
+                    <span><i class="fas fa-circle"></i> Opened <span id="crm-count">0</span> times</span>
+                </div>
+            </div>
+
+            <div class="card design-card">
+                <div class="icon-container">
+                    <i class="fas fa-palette"></i>
+                </div>
+                <h2>Design & Tasks</h2>
+                <p>Manage design tasks, posters, logos, video edits, and assigned work.</p>
+                <button class="card-btn design-btn" onclick="openWorkspace('Designs', 'designs.html')">
+                    <i class="fas fa-arrow-right"></i> Open Designs
+                </button>
+                <div class="card-footer">
+                    <span><i class="fas fa-circle"></i> Opened <span id="design-count">0</span> times</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Last Opened Section -->
+        <section class="last-opened-container">
+            <div class="last-opened-card">
+                <div class="last-opened-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="last-opened-content">
+                    <p>Last opened: <span id="last-workspace">None</span></p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <button class="reset-btn" onclick="resetWorkspaceData()">
+            <i class="fas fa-redo"></i> Reset Workspace Data
+        </button>
+    </footer>
+
+    <!-- Help Center Modal -->
+    <div id="helpModal" class="help-modal">
+        <div class="help-modal-content">
+            <div class="help-header">
+                <div class="help-header-content">
+                    <div class="section-label" id="sectionLabel">📘 Billing Guide</div>
+                    <h2>KodingWala Team Help Center</h2>
+                    <p>Learn how to use KodingWala Office Software.</p>
+                </div>
+                <button class="help-close" onclick="closeHelpCenter()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <div class="progress-text">
+                    <span id="currentProgress">1</span> / <span id="totalProgress">22</span>
+                </div>
+            </div>
+
+            <!-- Help Tabs -->
+            <div class="help-tabs">
+                <button class="help-tab active" onclick="switchHelpTab('billing', this)">
+                    <i class="fas fa-file-invoice-dollar"></i> Billing Guide
+                </button>
+                <button class="help-tab" onclick="switchHelpTab('crm', this)">
+                    <i class="fas fa-headset"></i> CRM Guide
+                </button>
+                <button class="help-tab" onclick="switchHelpTab('designs', this)">
+                    <i class="fas fa-palette"></i> Designs Guide
+                </button>
+            </div>
+
+            <!-- Help Content -->
+            <div class="help-content">
+                <!-- Billing System Guide -->
+                <div id="billingHelp" class="help-section active">
+                    <div class="help-topic">
+                        <div class="topic-icon">
+                            <i class="fas fa-coins"></i>
+                        </div>
+                        <div class="topic-content">
+                            <h3>💰 What is Billing System?</h3>
+                            <p>Billing System is used to create client bills. It calculates services, GST, discount, advance and balance. Finally, we can download PDF or send bill on WhatsApp.</p>
+                        </div>
+                    </div>
+
+                    <div class="help-topic">
+                        <div class="topic-icon">
+                            <i class="fas fa-plus-circle"></i>
+                        </div>
+                        <div class="topic-content">
+                            <h3>🧾 How to create a new bill?</h3>
+                            <p>Click "New Bill" button to start fresh bill. Enter client details and select required services. System will automatically calculate all amounts.</p>
+                        </div>
+                    </div>
+
+                    <div class="help-topic">
+                        <div class="topic-icon">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="topic-content">
+                            <h3>🧑 How to add client details?</h3>
+                            <p>Fill client name, phone, address and GST number. All details are saved with the bill for future reference.</p>
+                        </div>
+                    </div>
+
+                    <div class="help-topic">
+                        <div class="topic-icon">
+                            <i class="fas fa-shopping-cart"></i>
+                        </div>
+                        <div class="topic-content">
+                            <h3>🛒 How to select services?</h3>
+                            <p>Choose services from dropdown list. Each service has price and GST rate. Multiple services can be added to same bill.</p>
+                        </div>
+                    </div>
+
+                    <div class="help-topic">
+                        <div class="topic-icon">
+                            <i class="fas fa-calculator"></i>
+                        </div>
+                        <div class="topic-content">
+                            <h3>🧮 How GST is calculated?</h3>
+                            <p>System calculates GST automatically based on service rates. GST percentage is predefined for each service category.</p>
+                        </div>
+                    </div>
+
+                    <div class="help-topic">
+                        <div class="topic-icon">
+                            <i class="fas fa-gift"></i>
+                        </div>
+                        <div class="topic-content">
+                            <h3>🎁 How discount works?</h3>
+                            <p>Enter discount percentage or amount. System will reduce total bill amount and recalculate balance accordingly.</p>
+                        </div>
+                    </div>
+
+                    <div class="help-topic">
+                        <div class="topic-icon">
+                            <i class="fas fa-hand-holding-usd"></i>
+                        </div>
+                        <div class="topic-content">
+                            <h3>💵 What is advance paid?</h3>
+                            <p>Advance is amount paid by client before final bill. Remaining balance is calculated after deducting advance from total.</p>
+                        </div>
+                    </div>
+
+                    <div class="help-topic">
+                        <div class="topic-icon">
+                            <i class="fas fa-balance-scale"></i>
+                        </div>
+                        <div class="topic-content">
+                            <h3>📌 What is balance amount?</h3>
+                            <p>Balance is remaining amount after deducting advance payment from total bill amount. Client needs to pay this balance.</p>
+                        </div>
+                    </div>
+
+                    <div class="help-topic">
+                        <div class="topic-icon">
+                            <i class="fas fa-eye"></i>
+                        </div>
+                        <div class="topic-content">
+                            <h3>👀 What is Check Invoice?</h3>
+                            <p>Check Invoice shows preview of final bill before generating. Use this to verify all details are correct.</p>
+                        </div>
+                    </div>
+
+                    <div class="help-topic">
+                        <div class="topic-icon">
+                            <i class="fas fa-lock"></i>
+                        </div>
+                        <div class="topic-content">
+                            <h3>🔒 What is Generate Invoice?</h3>
+                            <p>Generate Invoice finalizes the bill and assigns unique invoice number. Bill cannot be modified after generation.</p>
+                        </div>
+                    </div>
+
+                    <div class="help-topic">
+                        <div class="topic-icon">
+                            <i class="fas fa-file-pdf"></i>
+                        </div>
+                        <div class="topic-content">
+                            <h3>📄 How Download PDF works?</h3>
+                            <p>Download PDF creates professional invoice document. PDF can be printed or shared with client.</p>
+                        </div>
+                    </div>
+
+                    <div class="help-topic">
+                        <div class="topic-icon">
+                            <i class="fab fa-whatsapp"></i>
+                        </div>
+                        <div class="topic-content">
+                            <h3>📲 How Send on WhatsApp works?</h3>
+                            <p>Send on WhatsApp opens WhatsApp with pre-filled invoice message and PDF attachment.</p>
+                        </div>
+                    </div>
+
+                    <div class="help-topic">
+                        <div class="topic-icon">
+                            <i class="fas fa-print"></i>
+                        </div>
+                        <div class="topic-content">
+                            <h3>🖨️ How Print Bill works?</h3>
+                            <p>Print Bill opens print dialog to print invoice directly on printer.</p>
+                        </div>
+                    </div>
+
+                    <div class="help-topic">
+                        <div class="topic-icon">
+                            <i class="fas fa-save"></i>
+                        </div>
+                        <div class="topic-content">
+                            <h3>💾 How Save Bill works?</h3>
+                            <p>Save Bill stores bill in browser LocalStorage for future access. Bills remain saved even after refresh.</p>
+                        </div>
+                    </div>
+
+                    <div class="help-topic">
+                        <div class="topic-icon">
+                            <i class="fas fa-history"></i>
+                        </div>
+                        <div class="topic-content">
+                            <h3>🗂️ What is View History?</h3>
+                            <p>View History shows all previously generated bills. Can search and download any past invoice.</p>
+                        </div>
+                    </div>
+
+                    <div class="help-topic">
+                        <div class="topic-icon">
+                            <i class="fas fa-eraser"></i>
+                        </div>
+                        <div class="topic-content">
+                            <h3>🧹 What does Clear Form do?</h3>
+                            <p>Clear Form removes all entered data and starts fresh bill creation.</p>
+                        </div>
+                    </div>
+
+                    <div class="help-topic">
+                        <div class="topic-icon">
+                            <i class="fas fa-hashtag"></i>
+                        </div>
+                        <div class="topic-content">
+                            <h3>🔢 How invoice number works?</h3>
+                            <p>Invoice number is auto-generated in format INV-YYYY-XXX where XXX is sequential number.</p>
+                        </div>
+                    </div>
+
+                    <div class="help-topic">
+                        <div class="topic-icon">
+                            <i class="fas fa-database"></i>
+                        </div>
+                        <div class="topic-content">
+                            <h3>💽 How LocalStorage saves bills?</h3>
+                            <p>LocalStorage saves billing data inside browser memory. Bills remain saved after refresh and laptop restart. No internet database is needed currently.</p>
+                        </div>
+                    </div>
+
+                    <div class="help-topic">
+                        <div class="topic-icon">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <div class="topic-content">
+                            <h3>⚠️ What happens if browser data is cleared?</h3>
+                            <p>If browser cache or browser data is cleared, saved bills may be deleted permanently.</p>
+                        </div>
+                    </div>
+
+                    <div class="help-topic">
+                        <div class="topic-icon">
+                            <i class="fas fa-file-export"></i>
+                        </div>
+                        <div class="topic-content">
+                            <h3>📤 Why Export CSV is important?</h3>
+                            <p>Export CSV creates backup of billing records. If system/browser data is lost, CSV backup can recover important client bills.</p>
+                        </div>
+                    </div>
+
+                    <div class="help-topic">
+                        <div class="topic-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div class="topic-content">
+                            <h3>🛡️ Why backup is important?</h3>
+                            <p>Backup protects company billing history. Always export CSV regularly for safety.</p>
+                        </div>
+                    </div>
+
+                    <!-- Important Notice Card -->
+                    <div class="important-notice">
+                        <div class="notice-icon">
+                            <i class="fas fa-exclamation-circle"></i>
+                        </div>
+                        <div class="notice-content">
+                            <h3>⚠️ Important Data Safety Note</h3>
+                            <p>✅ LocalStorage keeps data after restart</p>
+                            <p>✅ Export CSV regularly for backup</p>
+                            <p>⚠️ Clearing browser data may remove saved records</p>
+                            <p>💾 Always keep backup files safe</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CRM Guide -->
+                <div id="crmHelp" class="help-section">
+                    <div class="help-topic">
+                        <div class="topic-icon">
+                            <i class="fas fa-headset"></i>
+                        </div>
+                        <div class="topic-content">
+                            <h3>📞 What is CRM?</h3>
+                            <p>CRM (Customer Relationship Management) manages client leads and business contacts. Helps track potential customers and convert them into clients.</p>
+                        </div>
+                    </div>
+
+                    <div class="help-topic">
+                        <div class="topic-icon">
+                            <i class="fas fa-tachometer-alt"></i>
+                        </div>
+                        <div class="topic-content">
+                            <h3>📊 What is dashboard?</h3>
+                            <p>Dashboard shows total leads, new leads, interested leads, follow-ups today and converted clients in one view.</p>
+                        </div>
+                    </div>
+
+                    <div class="help-topic">
+                        <div class="topic-icon">
+                            <i class="fas fa-chart-bar"></i>
+                        </div>
+                        <div class="topic-content">
+                            <h3>📈 What is lead graph/chart?</h3>
+                            <p>Lead graph shows visual representation of lead status and conversion rates over time.</p>
+                        </div>
+                    </div>
+
+                    <div class="help-topic">
+                        <div class="topic-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="topic-content">
+                            <h3>🕘 What are recent leads?</h3>
+                            <p>Recent leads shows latest added businesses for quick follow-up and contact.</p>
+                        </div>
+                    </div>
+
+                    <div class="help-topic">
+                        <div class="topic-icon">
+                            <i class="fas fa-user-plus"></i>
+                        </div>
+                        <div class="topic-content">
+                            <h3>➕ How to add a lead?</h3>
+                            <p>Fill business name, phone, category, services, budget and follow-up date. Click Add Lead to save.</p>
+                        </div>
+                    </div>
+
+                    <div class="help-topic">
+                        <div class="topic-icon">
+                            <i class="fas fa-building"></i>
+                        </div>
+                        <div class="topic-content">
+                            <h3>🏢 What is business category?</h3>
+                            <p>Business category classifies leads like Hospital, Salon, School, Shop etc. for better organization.</p>
+                        </div>
+                    </div>
+
+                    <div class="help-topic">
+                        <div class="topic-icon">
+                            <i class="fas fa-tools"></i>
+                        </div>
+                        <div class="topic-content">
+                            <h3>🛠️ What are required services?</h3>
+                            <p>Services are what client needs like Websites, SEO, Ads, AI Agents, Posters etc.</p>
+                        </div>
+                    </div>
+
+                    <div class="help-topic">
+                        <div class="topic-icon">
+                            <i class="fas fa-tags"></i>
+                        </div>
+                        <div class="topic-content">
+                            <h3>📌 What is lead status?</h3>
+                            <p>Lead status shows progress: New Lead, Called, Interested, Not Interested, Call Later, Meeting Fixed, Converted Client.</p>
+                        </div>
+                    </div>
+
+                    <div class="help-topic">
+                        <div class="topic-icon">
+                            <i class="fas fa-search"></i>
+                        </div>
+                        <div class="topic-content">
+                            <h3>🔍 How search works?</h3>
+                            <p>Search finds leads by business name or phone number from all saved leads.</p>
+                        </div>
+                    </div>
+
+                    <div class="help-topic">
+                        <div class="topic-icon">
+                            <i class="fas fa-filter"></i>
+                        </div>
+                        <div class="topic-content">
+                            <h3>🧰 How filters work?</h3>
+                            <p>Filters narrow leads by category, status or services for focused view.</p>
+                        </div>
+                    </div>
+
+                    <div class="help-topic">
+                        <div class="topic-icon">
+                            <i class="fas fa-eye"></i>
+                        </div>
+                        <div class="topic-content">
+                            <h3>👁️ What does View lead do?</h3>
+                            <p>View lead shows complete details of selected business with all information.</p>
+                        </div>
+                    </div>
+
+                    <div class="help-topic">
+                        <div class="topic-icon">
+                            <i class="fas fa-edit"></i>
+                        </div>
+                        <div class="topic-content">
+                            <h3>✏️ What does Edit lead do?</h3>
+                            <p>Edit lead allows modifying any lead information like status, follow-up date or notes.</p>
+                        </div>
+                    </div>
+
+                    <div class="help-topic">
+                        <div class="topic-icon">
+                            <i class="fab fa-whatsapp"></i>
+                        </div>
+                        <div class="topic-content">
+                            <h3>📲 How WhatsApp button works?</h3>
+                            <p>WhatsApp button opens WhatsApp chat with client number for quick communication.</p>
+                        </div>
+                    </div>
+
+                    <div class="help-topic">
+                        <div class="topic-icon">
+                            <i class="fas fa-phone"></i>
+                        </div>
+                        <div class="topic-content">
+                            <h3>☎️ How call button works?</h3>
+                            <p>Call button opens dialer with client number for making phone calls.</p>
+                        </div>
+                    </div>
+
+                    <div class="help-topic">
+                        <div class="topic-icon">
+                            <i class="fas fa-calendar-alt"></i>
+                        </div>
+                        <div class="topic-content">
+                            <h3>🗓️ What are follow-ups?</h3>
+                            <p>Follow-ups are scheduled calls or meetings to maintain contact with potential clients.</p>
+                        </div>
+                    </div>
+
+                    <div class="help-topic">
+                        <div class="topic-icon">
+                            <i class="fas fa-tags"></i>
+                        </div>
+                        <div class="topic-content">
+                            <h3>🏷️ What are categories page?</h3>
+                            <p>Categories page shows all business types with lead count for each category.</p>
+                        </div>
+                    </div>
+
+                    <div class="help-topic">
+                        <div class="topic-icon">
+                            <i class="fas fa-cogs"></i>
+                        </div>
+                        <div class="topic-content">
+                            <h3>⚙️ What are services page?</h3>
+                            <p>Services page shows all services offered with lead count for each service.</p>
+                        </div>
+                    </div>
+
+                    <div class="help-topic">
+                        <div class="topic-icon">
+                            <i class="fas fa-file-export"></i>
+                        </div>
+                        <div class="topic-content">
+                            <h3>📤 What is export CSV?</h3>
+                            <p>Export CSV downloads all leads into Excel-style file. Useful for backup and transferring data.</p>
+                        </div>
+                    </div>
+
+                    <div class="help-topic">
+                        <div class="topic-icon">
+                            <i class="fas fa-file-import"></i>
+                        </div>
+                        <div class="topic-content">
+                            <h3>📥 What is import CSV?</h3>
+                            <p>Import CSV allows restoring leads from backup file. Useful for data migration.</p>
+                        </div>
+                    </div>
+
+                    <div class="help-topic">
+                        <div class="topic-icon">
+                            <i class="fas fa-database"></i>
+                        </div>
+                        <div class="topic-content">
+                            <h3>💾 How LocalStorage saves leads?</h3>
+                            <p>All client leads are saved inside browser LocalStorage. Leads remain after refresh and restart.</p>
+                        </div>
+                    </div>
+
+                    <div class="help-topic">
+                        <div class="topic-icon">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <div class="topic-content">
+                            <h3>⚠️ What happens if browser data is cleared?</h3>
+                            <p>If browser data/cache is cleared, all saved leads may be deleted.</p>
+                        </div>
+                    </div>
+
+                    <div class="help-topic">
+                        <div class="topic-icon">
+                            <i class="fas fa-file-export"></i>
+                        </div>
+                        <div class="topic-content">
+                            <h3>📤 Why Export CSV is important?</h3>
+                            <p>Export CSV creates backup of all client leads. Regular backup prevents data loss.</p>
+                        </div>
+                    </div>
+
+                    <div class="help-topic">
+                        <div class="topic-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div class="topic-content">
+                            <h3>🛡️ Why lead backup is important?</h3>
+                            <p>Client leads are valuable business data. Regular backup prevents data loss.</p>
+                        </div>
+                    </div>
+
+                    <!-- Important Notice Card -->
+                    <div class="important-notice">
+                        <div class="notice-icon">
+                            <i class="fas fa-exclamation-circle"></i>
+                        </div>
+                        <div class="notice-content">
+                            <h3>⚠️ Important Data Safety Note</h3>
+                            <p>✅ LocalStorage keeps leads after restart</p>
+                            <p>✅ Export CSV regularly for backup</p>
+                            <p>⚠️ Clearing browser data may remove saved leads</p>
+                            <p>💾 Always keep CSV backup files safe</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Designs Guide -->
+                <div id="designsHelp" class="help-section">
+                    <div class="help-topic">
+                        <div class="topic-icon">
+                            <i class="fas fa-palette"></i>
+                        </div>
+                        <div class="topic-content">
+                            <h3>🎨 What is Design & Tasks?</h3>
+                            <p>Design & Tasks manages creative work assignments. Assigns tasks to team members with deadlines and requirements.</p>
+                        </div>
+                    </div>
+
+                    <div class="help-topic">
+                        <div class="topic-icon">
+                            <i class="fas fa-tachometer-alt"></i>
+                        </div>
+                        <div class="topic-content">
+                            <h3>📊 What is task dashboard?</h3>
+                            <p>Task dashboard shows total tasks, pending, working, completed and delayed tasks overview.</p>
+                        </div>
+                    </div>
+
+                    <div class="help-topic">
+                        <div class="topic-icon">
+                            <i class="fas fa-plus-circle"></i>
+                        </div>
+                        <div class="topic-content">
+                            <h3>➕ How to add a task?</h3>
+                            <p>Fill task details like title, category, assigned to, deadline and priority. Click Add Task to create.</p>
+                        </div>
+                    </div>
+
+                    <div class="help-topic">
+                        <div class="topic-icon">
+                            <i class="fas fa-hashtag"></i>
+                        </div>
+                        <div class="topic-content">
+                            <h3>🆔 What is Task ID?</h3>
+                            <p>Task ID is unique number for each task like TK-001, TK-002 etc. for easy reference.</p>
+                        </div>
+                    </div>
+
+                    <div class="help-topic">
+                        <div class="topic-icon">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="topic-content">
+                            <h3>👨‍💻 What is Assigned To?</h3>
+                            <p>Assigned To selects team member responsible for completing the task.</p>
+                        </div>
+                    </div>
+
+                    <div class="help-topic">
+                        <div class="topic-icon">
+                            <i class="fas fa-folder"></i>
+                        </div>
+                        <div class="topic-content">
+                            <h3>📂 What is task category?</h3>
+                            <p>Task category classifies work like Website Design, Logo Design, Video Editing, SEO Support etc.</p>
+                        </div>
+                    </div>
+
+                    <div class="help-topic">
+                        <div class="topic-icon">
+                            <i class="fas fa-heading"></i>
+                        </div>
+                        <div class="topic-content">
+                            <h3>📝 What is task title?</h3>
+                            <p>Task title describes the work to be done in short, clear description.</p>
+                        </div>
+                    </div>
+
+                    <div class="help-topic">
+                        <div class="topic-icon">
+                            <i class="fas fa-calendar"></i>
+                        </div>
+                        <div class="topic-content">
+                            <h3>⏰ What is deadline?</h3>
+                            <p>Deadline is due date for task completion. Tasks can be marked delayed if not completed on time.</p>
+                        </div>
+                    </div>
+
+                    <div class="help-topic">
+                        <div class="topic-icon">
+                            <i class="fas fa-tasks"></i>
+                        </div>
+                        <div class="topic-content">
+                            <h3>🚦 What is task status?</h3>
+                            <p>Task status shows progress: Pending, Working, Review, Completed, Delayed.</p>
+                        </div>
+                    </div>
+
+                    <div class="help-topic">
+                        <div class="topic-icon">
+                            <i class="fas fa-fire"></i>
+                        </div>
+                        <div class="topic-content">
+                            <h3>🔥 What is priority?</h3>
+                            <p>Priority sets task importance: Low, Medium, High, Urgent. Higher priority tasks get attention first.</p>
+                        </div>
+                    </div>
+
+                    <div class="help-topic">
+                        <div class="topic-icon">
+                            <i class="fas fa-link"></i>
+                        </div>
+                        <div class="topic-content">
+                            <h3>🔗 What are work links?</h3>
+                            <p>Work links provide access to related files, code repositories and project resources.</p>
+                        </div>
+                    </div>
+
+                    <div class="help-topic">
+                        <div class="topic-icon">
+                            <i class="fab fa-github"></i>
+                        </div>
+                        <div class="topic-content">
+                            <h3>🐙 What is GitHub link?</h3>
+                            <p>GitHub link opens code repository for website development projects.</p>
+                        </div>
+                    </div>
+
+                    <div class="help-topic">
+                        <div class="topic-icon">
+                            <i class="fab fa-google-drive"></i>
+                        </div>
+                        <div class="topic-content">
+                            <h3>📁 What is Google Drive link?</h3>
+                            <p>Google Drive link opens file storage for design files and documents.</p>
+                        </div>
+                    </div>
+
+                    <div class="help-topic">
+                        <div class="topic-icon">
+                            <i class="fas fa-image"></i>
+                        </div>
+                        <div class="topic-content">
+                            <h3>🖼️ What is screenshot link?</h3>
+                            <p>Screenshot link shows visual reference or preview of design work.</p>
+                        </div>
+                    </div>
+
+                    <div class="help-topic">
+                        <div class="topic-icon">
+                            <i class="fas fa-eye"></i>
+                        </div>
+                        <div class="topic-content">
+                            <h3>👁️ What does View task do?</h3>
+                            <p>View task shows complete task details with all information and links.</p>
+                        </div>
+                    </div>
+
+                    <div class="help-topic">
+                        <div class="topic-icon">
+                            <i class="fas fa-edit"></i>
+                        </div>
+                        <div class="topic-content">
+                            <h3>✏️ What does Edit task do?</h3>
+                            <p>Edit task allows modifying any task details like status, deadline or links.</p>
+                        </div>
+                    </div>
+
+                    <div class="help-topic">
+                        <div class="topic-icon">
+                            <i class="fas fa-play"></i>
+                        </div>
+                        <div class="topic-content">
+                            <h3>▶️ What does Mark Working do?</h3>
+                            <p>Mark Working changes task status to "Working" when team member starts work.</p>
+                        </div>
+                    </div>
+
+                    <div class="help-topic">
+                        <div class="topic-icon">
+                            <i class="fas fa-check"></i>
+                        </div>
+                        <div class="topic-content">
+                            <h3>✅ What does Mark Completed do?</h3>
+                            <p>Mark Completed changes task status to "Completed" when work is finished.</p>
+                        </div>
+                    </div>
+
+                    <div class="help-topic">
+                        <div class="topic-icon">
+                            <i class="fab fa-whatsapp"></i>
+                        </div>
+                        <div class="topic-content">
+                            <h3>📲 How WhatsApp Worker works?</h3>
+                            <p>WhatsApp Worker opens chat with assigned team member for task coordination.</p>
+                        </div>
+                    </div>
+
+                    <div class="help-topic">
+                        <div class="topic-icon">
+                            <i class="fas fa-file-export"></i>
+                        </div>
+                        <div class="topic-content">
+                            <h3>📤 What is Export CSV?</h3>
+                            <p>Export CSV creates backup of all tasks and assignments in Excel format.</p>
+                        </div>
+                    </div>
+
+                    <div class="help-topic">
+                        <div class="topic-icon">
+                            <i class="fas fa-file-import"></i>
+                        </div>
+                        <div class="topic-content">
+                            <h3>📥 What is Import CSV?</h3>
+                            <p>Import CSV restores task data from backup file for data recovery.</p>
+                        </div>
+                    </div>
+
+                    <div class="help-topic">
+                        <div class="topic-icon">
+                            <i class="fas fa-database"></i>
+                        </div>
+                        <div class="topic-content">
+                            <h3>💾 How LocalStorage saves tasks?</h3>
+                            <p>All tasks are stored in browser LocalStorage. Tasks remain after refresh and restart.</p>
+                        </div>
+                    </div>
+
+                    <div class="help-topic">
+                        <div class="topic-icon">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <div class="topic-content">
+                            <h3>⚠️ What happens if browser data is cleared?</h3>
+                            <p>If browser data is removed, saved tasks may disappear permanently.</p>
+                        </div>
+                    </div>
+
+                    <div class="help-topic">
+                        <div class="topic-icon">
+                            <i class="fas fa-file-export"></i>
+                        </div>
+                        <div class="topic-content">
+                            <h3>📤 Why Export CSV is important?</h3>
+                            <p>Export CSV creates backup of tasks and assignments. Regular backup protects project history.</p>
+                        </div>
+                    </div>
+
+                    <div class="help-topic">
+                        <div class="topic-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div class="topic-content">
+                            <h3>🛡️ Why task backup is important?</h3>
+                            <p>Backup helps protect project history and assigned works. Prevents data loss.</p>
+                        </div>
+                    </div>
+
+                    <!-- Important Notice Card -->
+                    <div class="important-notice">
+                        <div class="notice-icon">
+                            <i class="fas fa-exclamation-circle"></i>
+                        </div>
+                        <div class="notice-content">
+                            <h3>⚠️ Important Data Safety Note</h3>
+                            <p>✅ LocalStorage keeps tasks after restart</p>
+                            <p>✅ Export CSV regularly for backup</p>
+                            <p>⚠️ Clearing browser data may remove saved tasks</p>
+                            <p>💾 Always keep CSV backup files safe</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="help-navigation">
+                <button class="help-nav-btn prev-btn" onclick="navigateHelp(-1)">
+                    <i class="fas fa-chevron-left"></i> Previous
+                </button>
+                <span class="help-topic-counter">
+                    <span id="currentTopic">1</span> / <span id="totalTopics">22</span>
+                </span>
+                <button class="help-nav-btn next-btn" onclick="navigateHelp(1)">
+                    <span id="nextBtnText">Next</span> <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="office.js"></script>
+</body>
+</html>

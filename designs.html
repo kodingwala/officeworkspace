@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KodingWala - Design & Tasks Workspace</title>
+    <link rel="stylesheet" href="designs.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Top Bar -->
+    <header class="top-bar">
+        <div class="logo-container">
+            <div class="logo">
+                <span class="logo-koding">Koding</span>
+                <span class="logo-wala">Wala</span>
+            </div>
+            <div class="page-title">Design & Tasks Workspace</div>
+        </div>
+        <div class="header-right">
+            <div class="datetime" id="datetime"></div>
+            <a href="office.html" class="back-btn">
+                <i class="fas fa-arrow-left"></i> Back to Office
+            </a>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Dashboard Cards -->
+        <section class="dashboard-cards">
+            <div class="card total-tasks">
+                <i class="fas fa-tasks"></i>
+                <h3>Total Tasks</h3>
+                <div class="count" id="totalTasks">0</div>
+            </div>
+            <div class="card pending-tasks">
+                <i class="fas fa-clock"></i>
+                <h3>Pending Tasks</h3>
+                <div class="count" id="pendingTasks">0</div>
+            </div>
+            <div class="card working-tasks">
+                <i class="fas fa-spinner"></i>
+                <h3>Working Tasks</h3>
+                <div class="count" id="workingTasks">0</div>
+            </div>
+            <div class="card completed-tasks">
+                <i class="fas fa-check-circle"></i>
+                <h3>Completed Tasks</h3>
+                <div class="count" id="completedTasks">0</div>
+            </div>
+            <div class="card delayed-tasks">
+                <i class="fas fa-exclamation-triangle"></i>
+                <h3>Delayed Tasks</h3>
+                <div class="count" id="delayedTasks">0</div>
+            </div>
+        </section>
+
+        <!-- Add Task Form -->
+        <section class="task-form-section">
+            <h2><i class="fas fa-plus-circle"></i> Add New Task</h2>
+            <form class="task-form" id="taskForm">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Task ID</label>
+                        <input type="text" id="taskId" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>Client Name</label>
+                        <input type="text" id="clientName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Business Name</label>
+                        <input type="text" id="businessName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Assigned To</label>
+                        <input type="text" id="assignedTo" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Worker Phone</label>
+                        <input type="tel" id="workerPhone" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Task Category</label>
+                        <select id="taskCategory" required>
+                            <option value="">Select Category</option>
+                            <option value="Website Design">Website Design</option>
+                            <option value="Static Website">Static Website</option>
+                            <option value="Dynamic Website">Dynamic Website</option>
+                            <option value="Landing Page">Landing Page</option>
+                            <option value="Portfolio Website">Portfolio Website</option>
+                            <option value="Logo Design">Logo Design</option>
+                            <option value="Poster Design">Poster Design</option>
+                            <option value="Reel Editing">Reel Editing</option>
+                            <option value="Video Editing">Video Editing</option>
+                            <option value="PPT Design">PPT Design</option>
+                            <option value="Resume Design">Resume Design</option>
+                            <option value="Student Mini Project">Student Mini Project</option>
+                            <option value="AI/ML Project">AI/ML Project</option>
+                            <option value="Frontend Project">Frontend Project</option>
+                            <option value="SEO Support">SEO Support</option>
+                            <option value="Digital Support">Digital Support</option>
+                            <option value="Digital Assistant">Digital Assistant</option>
+                            <option value="WhatsApp Integration">WhatsApp Integration</option>
+                            <option value="Google Business Profile Setup">Google Business Profile Setup</option>
+                            <option value="Meta Ads Creative">Meta Ads Creative</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Task Title</label>
+                        <input type="text" id="taskTitle" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Task Description</label>
+                        <textarea id="taskDescription" rows="3" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Priority</label>
+                        <select id="priority" required>
+                            <option value="">Select Priority</option>
+                            <option value="Low">Low</option>
+                            <option value="Medium">Medium</option>
+                            <option value="High">High</option>
+                            <option value="Urgent">Urgent</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Deadline Date</label>
+                        <input type="date" id="deadlineDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Deadline Time</label>
+                        <input type="time" id="deadlineTime" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Task Status</label>
+                        <select id="status" required>
+                            <option value="">Select Status</option>
+                            <option value="Pending">Pending</option>
+                            <option value="Working">Working</option>
+                            <option value="Review">Review</option>
+                            <option value="Completed">Completed</option>
+                            <option value="Delayed">Delayed</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Work Link</label>
+                        <input type="url" id="workLink">
+                    </div>
+                    <div class="form-group">
+                        <label>GitHub Link</label>
+                        <input type="url" id="githubLink">
+                    </div>
+                    <div class="form-group">
+                        <label>Google Drive Link</label>
+                        <input type="url" id="driveLink">
+                    </div>
+                    <div class="form-group">
+                        <label>Screenshot Link</label>
+                        <input type="url" id="screenshotLink">
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Notes</label>
+                        <textarea id="notes" rows="2"></textarea>
+                    </div>
+                </div>
+                <div class="form-buttons">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Add Task
+                    </button>
+                    <button type="button" class="btn btn-secondary" id="updateBtn" style="display: none;">
+                        <i class="fas fa-save"></i> Update Task
+                    </button>
+                    <button type="button" class="btn btn-outline" id="clearBtn">
+                        <i class="fas fa-times"></i> Clear Form
+                    </button>
+                </div>
+            </form>
+        </section>
+
+        <!-- Filters and Actions -->
+        <section class="filters-section">
+            <div class="filters">
+                <input type="text" id="searchInput" placeholder="Search by client, worker, or task ID...">
+                <select id="categoryFilter">
+                    <option value="">All Categories</option>
+                    <option value="Website Design">Website Design</option>
+                    <option value="Static Website">Static Website</option>
+                    <option value="Dynamic Website">Dynamic Website</option>
+                    <option value="Landing Page">Landing Page</option>
+                    <option value="Portfolio Website">Portfolio Website</option>
+                    <option value="Logo Design">Logo Design</option>
+                    <option value="Poster Design">Poster Design</option>
+                    <option value="Reel Editing">Reel Editing</option>
+                    <option value="Video Editing">Video Editing</option>
+                    <option value="PPT Design">PPT Design</option>
+                    <option value="Resume Design">Resume Design</option>
+                    <option value="Student Mini Project">Student Mini Project</option>
+                    <option value="AI/ML Project">AI/ML Project</option>
+                    <option value="Frontend Project">Frontend Project</option>
+                    <option value="SEO Support">SEO Support</option>
+                    <option value="Digital Support">Digital Support</option>
+                    <option value="Digital Assistant">Digital Assistant</option>
+                    <option value="WhatsApp Integration">WhatsApp Integration</option>
+                    <option value="Google Business Profile Setup">Google Business Profile Setup</option>
+                    <option value="Meta Ads Creative">Meta Ads Creative</option>
+                    <option value="Other">Other</option>
+                </select>
+                <select id="statusFilter">
+                    <option value="">All Status</option>
+                    <option value="Pending">Pending</option>
+                    <option value="Working">Working</option>
+                    <option value="Review">Review</option>
+                    <option value="Completed">Completed</option>
+                    <option value="Delayed">Delayed</option>
+                </select>
+                <select id="priorityFilter">
+                    <option value="">All Priorities</option>
+                    <option value="Low">Low</option>
+                    <option value="Medium">Medium</option>
+                    <option value="High">High</option>
+                    <option value="Urgent">Urgent</option>
+                </select>
+            </div>
+            <div class="actions">
+                <button class="btn btn-outline" id="exportBtn">
+                    <i class="fas fa-download"></i> Export CSV
+                </button>
+                <button class="btn btn-outline" id="clearAllBtn">
+                    <i class="fas fa-trash"></i> Clear All Tasks
+                </button>
+            </div>
+        </section>
+
+        <!-- Task Table -->
+        <section class="task-table-section">
+            <h2><i class="fas fa-list"></i> Task List</h2>
+            <div class="table-container">
+                <table id="taskTable">
+                    <thead>
+                        <tr>
+                            <th>Task ID</th>
+                            <th>Client</th>
+                            <th>Assigned To</th>
+                            <th>Category</th>
+                            <th>Priority</th>
+                            <th>Deadline</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="taskTableBody">
+                        <!-- Tasks will be inserted here -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+
+    <!-- View Task Modal -->
+    <div class="modal" id="viewModal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2><i class="fas fa-eye"></i> Task Details</h2>
+            <div id="modalBody">
+                <!-- Task details will be inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toastContainer"></div>
+
+    <script src="designs.js"></script>
+</body>
+</html>
