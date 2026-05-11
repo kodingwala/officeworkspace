@@ -3,9 +3,64 @@ let leads = [];
 let currentEditId = null;
 let filteredLeads = [];
 let statusChart = null;
+let currentUser = null;
+
+// Normalize status function
+function normalizeStatus(status) {
+    if (!status) return "New Lead";
+    
+    const value = status.toString().trim().toLowerCase();
+    
+    const statusMap = {
+        "new lead": "New Lead",
+        "not called": "Not Called",
+        "called": "Called",
+        "interested": "Interested",
+        "not interested": "Not Interested",
+        "call later": "Call Later",
+        "called later": "Call Later",
+        "meeting fixed": "Meeting Fixed",
+        "converted client": "Converted Client",
+        "converted clients": "Converted Client"
+    };
+    
+    return statusMap[value] || "New Lead";
+}
+
+// Parse services function
+function parseServices(value) {
+    if (!value) return [];
+    
+    // Handle different formats
+    let services = [];
+    if (typeof value === 'string') {
+        // Split by comma, semicolon, or pipe
+        services = value.split(/[,;|]/)
+            .map(s => s.trim())
+            .filter(Boolean);
+    } else if (Array.isArray(value)) {
+        services = value.map(s => s.toString().trim()).filter(Boolean);
+    }
+    
+    // Handle service name variations
+    const serviceMap = {
+        "google business profile": "Google Business Profile Setup",
+        "google business": "Google Business Profile Setup",
+        "whatsapp business": "WhatsApp Business Setup",
+        "whatsapp": "WhatsApp Business Setup",
+        "social media setup": "Social Media Page Setup",
+        "social media": "Social Media Page Setup"
+    };
+    
+    return services.map(service => {
+        const lowerService = service.toLowerCase();
+        return serviceMap[lowerService] || service;
+    });
+}
 
 // Initialize the app
 document.addEventListener('DOMContentLoaded', function() {
+    checkTeamLogin();
     loadDataFromLocalStorage();
     updateDashboard();
     renderLeadsTable();
@@ -50,23 +105,169 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('csvFileInput').addEventListener('change', handleFileSelect);
     }
     
+    if (document.getElementById('profileClick')) {
+        document.getElementById('profileClick').addEventListener('click', openProfileModal);
+    }
+    
+    if (document.getElementById('teamLoginForm')) {
+        document.getElementById('teamLoginForm').addEventListener('submit', handleTeamLogin);
+    }
+    
+    if (document.getElementById('profileForm')) {
+        document.getElementById('profileForm').addEventListener('submit', handleProfileSubmit);
+    }
+    
     // Navigation
     document.querySelectorAll('.nav-item').forEach(item => {
         item.addEventListener('click', handleNavigation);
     });
     
     // Close modal on outside click
-    if (document.getElementById('viewLeadModal')) {
-        document.getElementById('viewLeadModal').addEventListener('click', function(e) {
+    document.querySelectorAll('.modal').forEach(modal => {
+        modal.addEventListener('click', function(e) {
             if (e.target === this) {
                 closeModal();
             }
         });
-    }
+    });
     
     // Auto update date every minute
     setInterval(updateCurrentDate, 60000);
+    
+    // Resize listener for mobile responsiveness
+    window.addEventListener('resize', renderLeadsTable);
 });
+
+// Check team login
+function checkTeamLogin() {
+    const userName = localStorage.getItem('kw_crm_user_name');
+    const userRole = localStorage.getItem('kw_crm_user_role');
+    
+    if (!userName || !userRole) {
+        showTeamLoginModal();
+    } else {
+        currentUser = { name: userName, role: userRole };
+        updateProfileDisplay();
+        showWelcomeModal();
+    }
+}
+
+// Show team login modal
+function showTeamLoginModal() {
+    const modal = document.getElementById('teamLoginModal');
+    if (modal) {
+        modal.classList.add('active');
+    }
+}
+
+// Close team login modal
+function closeTeamLoginModal() {
+    const modal = document.getElementById('teamLoginModal');
+    if (modal) {
+        modal.classList.remove('active');
+    }
+}
+
+// Handle team login
+function handleTeamLogin(e) {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const userName = formData.get('teamName').trim();
+    const userRole = formData.get('teamRole');
+    
+    if (userName && userRole) {
+        currentUser = { name: userName, role: userRole };
+        localStorage.setItem('kw_crm_user_name', userName);
+        localStorage.setItem('kw_crm_user_role', userRole);
+        updateProfileDisplay();
+        closeTeamLoginModal();
+        showWelcomeModal();
+    }
+}
+
+// Show welcome modal
+function showWelcomeModal() {
+    const modal = document.getElementById('welcomeModal');
+    const message = document.getElementById('welcomeMessage');
+    
+    if (modal && message && currentUser) {
+        message.innerHTML = `
+            Hi ${currentUser.name},
+            <br><br>
+            Greetings from Mohith, Founder & CEO of KodingWala.
+            <br><br>
+            Use this CRM to manage leads, follow-ups, client details, and customer support properly.
+            <br><br>
+            Every lead you add helps our company grow.
+            <br><br>
+            Work Together • Grow Together 🩵🧡
+        `;
+        modal.classList.add('active');
+    }
+}
+
+// Close welcome modal
+function closeWelcomeModal() {
+    const modal = document.getElementById('welcomeModal');
+    if (modal) {
+        modal.classList.remove('active');
+    }
+}
+
+// Update profile display
+function updateProfileDisplay() {
+    const profileName = document.getElementById('profileName');
+    if (profileName && currentUser) {
+        profileName.textContent = `${currentUser.name} - ${currentUser.role}`;
+    }
+}
+
+// Open profile modal
+function openProfileModal() {
+    const modal = document.getElementById('profileModal');
+    const nameInput = document.getElementById('profileNameInput');
+    const roleInput = document.getElementById('profileRoleInput');
+    
+    if (modal && currentUser) {
+        nameInput.value = currentUser.name;
+        roleInput.value = currentUser.role;
+        modal.classList.add('active');
+    }
+}
+
+// Close profile modal
+function closeProfileModal() {
+    const modal = document.getElementById('profileModal');
+    if (modal) {
+        modal.classList.remove('active');
+    }
+}
+
+// Handle profile submit
+function handleProfileSubmit(e) {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const newName = formData.get('profileName').trim();
+    const newRole = formData.get('profileRole');
+    
+    if (newName && newRole) {
+        currentUser = { name: newName, role: newRole };
+        localStorage.setItem('kw_crm_user_name', newName);
+        localStorage.setItem('kw_crm_user_role', newRole);
+        updateProfileDisplay();
+        closeProfileModal();
+        showToast('Profile updated successfully!', 'success');
+    }
+}
+
+// Reset profile
+function resetProfile() {
+    localStorage.removeItem('kw_crm_user_name');
+    localStorage.removeItem('kw_crm_user_role');
+    closeProfileModal();
+    checkTeamLogin();
+    showToast('Profile reset successfully!', 'success');
+}
 
 // LocalStorage functions
 function saveDataToLocalStorage() {
@@ -100,6 +301,7 @@ function handleNavigation(e) {
     // Close sidebar on mobile
     if (window.innerWidth <= 768) {
         document.getElementById('sidebar').classList.remove('active');
+        document.getElementById('sidebarOverlay').classList.remove('active');
     }
     
     // Update data for specific pages
@@ -122,7 +324,11 @@ function handleNavigation(e) {
 
 // Sidebar toggle
 function toggleSidebar() {
-    document.getElementById('sidebar').classList.toggle('active');
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    
+    sidebar.classList.toggle('active');
+    overlay.classList.toggle('active');
 }
 
 // Update current date
@@ -169,7 +375,9 @@ function handleFormSubmit(e) {
         followupDate: formData.get('followupDate'),
         followupTime: formData.get('followupTime'),
         notes: formData.get('notes'),
-        createdAt: currentEditId ? leads.find(l => l.id === currentEditId).createdAt : new Date().toISOString()
+        createdAt: currentEditId ? leads.find(l => l.id === currentEditId).createdAt : new Date().toISOString(),
+        addedBy: currentUser ? currentUser.name : 'Admin',
+        addedByRole: currentUser ? currentUser.role : 'Admin'
     };
     
     // Check for duplicates
@@ -201,7 +409,19 @@ function handleFormSubmit(e) {
     saveDataToLocalStorage();
     refreshAllData();
     clearForm();
-    showAddLeadPage();
+    showAllLeadsPage();
+}
+
+// Show all leads page after form submission
+function showAllLeadsPage() {
+    document.querySelectorAll('.nav-item').forEach(item => {
+        item.classList.remove('active');
+    });
+    document.querySelector('[data-page="all-leads"]').classList.add('active');
+    document.querySelectorAll('.page').forEach(p => {
+        p.classList.remove('active');
+    });
+    document.getElementById('all-leads-page').classList.add('active');
 }
 
 // Update form buttons based on edit mode
@@ -239,7 +459,7 @@ function clearForm() {
 // Cancel edit
 function cancelEdit() {
     clearForm();
-    showAddLeadPage();
+    showAllLeadsPage();
 }
 
 // Show add lead page
@@ -259,9 +479,9 @@ function showAddLeadPage() {
 // Dashboard functions
 function updateDashboard() {
     const totalLeads = leads.length;
-    const newLeads = leads.filter(l => l.leadStatus === 'New Lead').length;
-    const interestedLeads = leads.filter(l => l.leadStatus === 'Interested').length;
-    const convertedClients = leads.filter(l => l.leadStatus === 'Converted Client').length;
+    const newLeads = leads.filter(l => l.leadStatus === "New Lead").length;
+    const interestedLeads = leads.filter(l => l.leadStatus === "Interested").length;
+    const convertedClients = leads.filter(l => l.leadStatus === "Converted Client").length;
     const followupsToday = getFollowupsToday();
     
     if (document.getElementById('totalLeads')) {
@@ -292,6 +512,7 @@ function updateDashboard() {
                 <div class="lead-info">
                     <h4>${lead.businessName}</h4>
                     <p>${lead.contactPerson} - ${lead.phoneNumber}</p>
+                    <small style="color: var(--text-secondary);">Added by: ${lead.addedBy}</small>
                 </div>
                 <span class="lead-status status-${getStatusClass(lead.leadStatus)}">${lead.leadStatus}</span>
             </div>
@@ -319,6 +540,7 @@ function updateStatusChart() {
     const ctx = document.getElementById('statusChart');
     if (!ctx) return;
     
+    // Count all statuses
     const statusCounts = {
         'New Lead': leads.filter(l => l.leadStatus === 'New Lead').length,
         'Not Called': leads.filter(l => l.leadStatus === 'Not Called').length,
@@ -335,14 +557,14 @@ function updateStatusChart() {
         datasets: [{
             data: Object.values(statusCounts),
             backgroundColor: [
-                '#00d4ff',
-                '#a855f7',
-                '#3b82f6',
-                '#10b981',
-                '#ef4444',
-                '#f59e0b',
-                '#ec4899',
-                'linear-gradient(135deg, #00d4ff, #ff6b35)'
+                '#00d4ff', // New Lead - cyan
+                '#a855f7', // Not Called - purple
+                '#3b82f6', // Called - blue
+                '#10b981', // Interested - green
+                '#ef4444', // Not Interested - red
+                '#f59e0b', // Call Later - orange
+                '#ec4899', // Meeting Fixed - pink
+                'linear-gradient(135deg, #00d4ff, #ff6b35)' // Converted Client - gradient
             ],
             borderWidth: 2,
             borderColor: '#0f172a'
@@ -360,9 +582,9 @@ function updateStatusChart() {
                     position: 'bottom',
                     labels: {
                         color: '#94a3b8',
-                        padding: 20,
+                        padding: 15,
                         font: {
-                            size: 12
+                            size: 10
                         }
                     }
                 }
@@ -394,9 +616,11 @@ function getFollowupsToday() {
 // Render leads table
 function renderLeadsTable() {
     const tbody = document.getElementById('leadsTableBody');
+    const mobileCards = document.getElementById('mobileCardsContainer');
     const emptyState = document.getElementById('emptyState');
+    const table = document.getElementById('leadsTable');
     
-    if (!tbody || !emptyState) return;
+    if (!tbody || !mobileCards || !emptyState || !table) return;
     
     // Check if we have any filtered leads or all leads
     const isFilterActive = document.getElementById('leadsSearch').value || 
@@ -408,43 +632,88 @@ function renderLeadsTable() {
     
     if (leadsToShow.length === 0) {
         tbody.innerHTML = '';
+        mobileCards.innerHTML = '';
         emptyState.style.display = 'block';
+        table.style.display = 'none';
+        mobileCards.style.display = 'none';
         return;
     }
     
     emptyState.style.display = 'none';
     
-    tbody.innerHTML = leadsToShow.map(lead => `
-        <tr>
-            <td>${lead.businessName}</td>
-            <td>${lead.phoneNumber}</td>
-            <td>${lead.category}</td>
-            <td>${lead.services.join(', ')}</td>
-            <td>
-                <span class="lead-status status-${getStatusClass(lead.leadStatus)}">${lead.leadStatus}</span>
-            </td>
-            <td>${lead.followupDate || '-'}</td>
-            <td>
-                <div class="action-buttons">
-                    <button class="btn btn-secondary" onclick="viewLead(${lead.id})" title="View">
-                        <i class="fas fa-eye"></i>
+    // Check mobile view
+    if (window.innerWidth <= 768) {
+        table.style.display = 'none';
+        mobileCards.style.display = 'flex';
+        mobileCards.innerHTML = leadsToShow.map(lead => `
+            <div class="mobile-card">
+                <div class="mobile-card-header">
+                    <div class="mobile-card-info">
+                        <h4>${lead.businessName}</h4>
+                        <p>${lead.contactPerson} - ${lead.phoneNumber}</p>
+                    </div>
+                    <span class="lead-status status-${getStatusClass(lead.leadStatus)}">${lead.leadStatus}</span>
+                </div>
+                <div class="mobile-card-meta">
+                    <p><i class="fas fa-tag"></i> ${lead.category}</p>
+                    <p><i class="fas fa-cogs"></i> ${lead.services.join(', ')}</p>
+                    <p><i class="fas fa-calendar"></i> ${lead.followupDate || 'No follow-up'}</p>
+                    <p><i class="fas fa-user"></i> Added by: ${lead.addedBy}</p>
+                </div>
+                <div class="mobile-card-actions">
+                    <button class="btn btn-secondary" onclick="viewLead(${lead.id})">
+                        <i class="fas fa-eye"></i> View
                     </button>
-                    <button class="btn btn-secondary" onclick="editLead(${lead.id})" title="Edit">
-                        <i class="fas fa-edit"></i>
+                    <button class="btn btn-secondary" onclick="editLead(${lead.id})">
+                        <i class="fas fa-edit"></i> Edit
                     </button>
-                    <a href="tel:${lead.phoneNumber}" class="btn btn-primary" title="Call">
-                        <i class="fas fa-phone-alt"></i>
+                    <a href="tel:${lead.phoneNumber}" class="btn btn-primary">
+                        <i class="fas fa-phone-alt"></i> Call
                     </a>
-                    <a href="https://wa.me/${lead.whatsappNumber.replace(/\D/g, '')}" class="btn btn-whatsapp" target="_blank" title="WhatsApp">
-                        <i class="fab fa-whatsapp"></i>
+                    <a href="https://wa.me/${lead.whatsappNumber.replace(/\D/g, '')}" class="btn btn-whatsapp" target="_blank">
+                        <i class="fab fa-whatsapp"></i> WhatsApp
                     </a>
-                    <button class="btn btn-danger" onclick="deleteLead(${lead.id})" title="Delete">
-                        <i class="fas fa-trash"></i>
+                    <button class="btn btn-danger" onclick="deleteLead(${lead.id})">
+                        <i class="fas fa-trash"></i> Delete
                     </button>
                 </div>
-            </td>
-        </tr>
-    `).join('');
+            </div>
+        `).join('');
+    } else {
+        table.style.display = 'table';
+        mobileCards.style.display = 'none';
+        tbody.innerHTML = leadsToShow.map(lead => `
+            <tr>
+                <td>${lead.businessName}</td>
+                <td>${lead.phoneNumber}</td>
+                <td>${lead.category}</td>
+                <td>${lead.services.join(', ')}</td>
+                <td>
+                    <span class="lead-status status-${getStatusClass(lead.leadStatus)}">${lead.leadStatus}</span>
+                </td>
+                <td>${lead.followupDate || '-'}</td>
+                <td>
+                    <div class="action-buttons">
+                        <button class="btn btn-secondary" onclick="viewLead(${lead.id})" title="View">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="btn btn-secondary" onclick="editLead(${lead.id})" title="Edit">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <a href="tel:${lead.phoneNumber}" class="btn btn-primary" title="Call">
+                            <i class="fas fa-phone-alt"></i>
+                        </a>
+                        <a href="https://wa.me/${lead.whatsappNumber.replace(/\D/g, '')}" class="btn btn-whatsapp" target="_blank" title="WhatsApp">
+                            <i class="fab fa-whatsapp"></i>
+                        </a>
+                        <button class="btn btn-danger" onclick="deleteLead(${lead.id})" title="Delete">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        `).join('');
+    }
 }
 
 // Filter leads
@@ -633,6 +902,13 @@ function viewLead(id) {
             </div>
             <div class="detail-item">
                 <div class="detail-label">
+                    <i class="fas fa-user"></i>
+                    Added By
+                </div>
+                <div class="detail-value">${lead.addedBy} (${lead.addedByRole})</div>
+            </div>
+            <div class="detail-item">
+                <div class="detail-label">
                     <i class="fas fa-clock"></i>
                     Created Date
                 </div>
@@ -720,6 +996,7 @@ function renderFollowups() {
                     <div class="followup-details">
                         <p>${lead.contactPerson} - ${lead.phoneNumber}</p>
                         <p>Time: ${lead.followupTime || 'Not specified'}</p>
+                        <small style="color: var(--text-secondary);">Added by: ${lead.addedBy}</small>
                     </div>
                 </div>
                 <div class="followup-actions">
@@ -747,6 +1024,7 @@ function renderFollowups() {
                     <div class="followup-details">
                         <p>${lead.contactPerson} - ${lead.phoneNumber}</p>
                         <p>Date: ${new Date(lead.followupDate).toLocaleDateString()}</p>
+                        <small style="color: var(--text-secondary);">Added by: ${lead.addedBy}</small>
                     </div>
                 </div>
                 <div class="followup-actions">
@@ -774,7 +1052,7 @@ function markAsCalled(id) {
     }
 }
 
-// Export CSV
+// Export CSV with team member info
 function exportCSV() {
     if (leads.length === 0) {
         showToast('No leads to export', 'warning');
@@ -797,7 +1075,11 @@ function exportCSV() {
         'Follow-up Date',
         'Follow-up Time',
         'Notes',
-        'Created Date'
+        'Added By',
+        'Added By Role',
+        'Created Date',
+        'Exported By',
+        'Export Date'
     ];
     
     const csvContent = [
@@ -818,15 +1100,20 @@ function exportCSV() {
             `"${lead.followupDate || ''}"`,
             `"${lead.followupTime || ''}"`,
             `"${lead.notes || ''}"`,
-            `"${new Date(lead.createdAt).toLocaleDateString()}"`
+            `"${lead.addedBy}"`,
+            `"${lead.addedByRole}"`,
+            `"${new Date(lead.createdAt).toLocaleDateString()}"`,
+            `"${currentUser ? currentUser.name : 'Admin'}"`,
+            `"${new Date().toLocaleDateString()}"`
         ].join(','))
     ].join('\n');
     
+    const fileName = `KodingWala_CRM_Leads_${currentUser ? currentUser.name : 'Admin'}_${new Date().toISOString().split('T')[0]}.csv`;
     const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');
     const url = URL.createObjectURL(blob);
     link.setAttribute('href', url);
-    link.setAttribute('download', `kodingwala_leads_${new Date().toISOString().split('T')[0]}.csv`);
+    link.setAttribute('download', fileName);
     link.style.visibility = 'hidden';
     document.body.appendChild(link);
     link.click();
@@ -835,7 +1122,7 @@ function exportCSV() {
     showToast('Leads exported successfully!', 'success');
 }
 
-// Import CSV
+// Import CSV - FIXED VERSION
 function importCSV() {
     const fileInput = document.getElementById('csvFileInput');
     if (!fileInput || !fileInput.files.length) {
@@ -856,24 +1143,34 @@ function importCSV() {
             for (let i = 1; i < lines.length; i++) {
                 if (lines[i].trim()) {
                     const values = parseCSVLine(lines[i]);
+                    const row = {};
+                    
+                    // Map headers to values
+                    headers.forEach((header, index) => {
+                        row[header] = values[index] || '';
+                    });
+                    
+                    // Normalize and map data
                     const lead = {
                         id: Date.now() + i,
-                        businessName: values[headers.indexOf('Business Name')] || '',
-                        contactPerson: values[headers.indexOf('Contact Person')] || '',
-                        phoneNumber: values[headers.indexOf('Phone Number')] || '',
-                        whatsappNumber: values[headers.indexOf('WhatsApp Number')] || values[headers.indexOf('Phone Number')] || '',
-                        email: values[headers.indexOf('Email')] || '',
-                        category: values[headers.indexOf('Category')] || '',
-                        location: values[headers.indexOf('Location')] || '',
-                        googleMapsLink: values[headers.indexOf('Google Maps Link')] || '',
-                        websiteAvailable: values[headers.indexOf('Website Available')] || '',
-                        services: values[headers.indexOf('Services')] ? values[headers.indexOf('Services')].split(';').map(s => s.trim()) : [],
-                        budget: values[headers.indexOf('Budget')] || '',
-                        leadStatus: values[headers.indexOf('Status')] || 'New Lead',
-                        followupDate: values[headers.indexOf('Follow-up Date')] || '',
-                        followupTime: values[headers.indexOf('Follow-up Time')] || '',
-                        notes: values[headers.indexOf('Notes')] || '',
-                        createdAt: new Date().toISOString()
+                        businessName: row["Business Name"] || row["businessName"] || '',
+                        contactPerson: row["Contact Person"] || row["contactPerson"] || '',
+                        phoneNumber: row["Phone Number"] || row["phoneNumber"] || '',
+                        whatsappNumber: row["WhatsApp Number"] || row["whatsappNumber"] || row["Phone Number"] || row["phoneNumber"] || '',
+                        email: row["Email"] || row["email"] || '',
+                        category: row["Category"] || row["category"] || 'Other',
+                        location: row["Location"] || row["location"] || '',
+                        googleMapsLink: row["Google Maps Link"] || row["googleMapsLink"] || '',
+                        websiteAvailable: row["Website Available"] || row["websiteAvailable"] || '',
+                        services: parseServices(row["Services"] || row["Required Services"] || row["services"] || ''),
+                        budget: row["Budget"] || row["budget"] || '',
+                        leadStatus: normalizeStatus(row["Lead Status"] || row["Status"] || row["leadStatus"] || 'New Lead'),
+                        followupDate: row["Follow-up Date"] || row["followupDate"] || '',
+                        followupTime: row["Follow-up Time"] || row["followupTime"] || '',
+                        notes: row["Notes"] || row["notes"] || '',
+                        createdAt: new Date().toISOString(),
+                        addedBy: row["Added By"] || row["addedBy"] || currentUser.name,
+                        addedByRole: row["Added By Role"] || row["addedByRole"] || currentUser.role
                     };
                     
                     // Check for duplicates
@@ -962,24 +1259,123 @@ function updateCategoriesPage() {
     });
 }
 
-// Update services page
+// ... (keep all existing code until updateServicesPage function)
+
+// Update services page - FIXED VERSION
 function updateServicesPage() {
-    const services = [
-        'Static Website', 'Dynamic Website', 'Meta Ads', 'SEO', 'AI Agents',
-        'Digital Marketing', 'Poster Design', 'Video Editing', 'Logo Design',
-        'Google Business Profile Setup', 'WhatsApp Business Setup',
-        'Social Media Page Setup', 'Other'
-    ];
-    
-    services.forEach(service => {
-        const count = leads.filter(l => l.services.includes(service)).length;
-        const id = service.toLowerCase().replace(/[^a-z0-9]/g, '') + 'Count';
-        const element = document.getElementById(id);
-        if (element) {
-            element.textContent = count;
-        }
-    });
+  const serviceMap = {
+    "Static Website": "staticWebsiteCount",
+    "Dynamic Website": "dynamicWebsiteCount",
+    "Meta Ads": "metaAdsCount",
+    "SEO": "seoCount",
+    "AI Agents": "aiAgentsCount",
+    "Digital Marketing": "digitalMarketingCount",
+    "Poster Design": "posterDesignCount",
+    "Video Editing": "videoEditingCount",
+    "Logo Design": "logoDesignCount",
+    "Google Business Profile Setup": "googleBusinessCount",
+    "WhatsApp Business Setup": "whatsappBusinessCount",
+    "Social Media Page Setup": "socialMediaCount",
+    "Other": "otherServiceCount"
+  };
+
+  Object.keys(serviceMap).forEach(service => {
+    const count = leads.filter(lead => {
+      if (!Array.isArray(lead.services)) return false;
+
+      return lead.services.some(s => {
+        const item = s.toLowerCase().trim();
+        const target = service.toLowerCase().trim();
+
+        return item === target || item.includes(target) || target.includes(item);
+      });
+    }).length;
+
+    const element = document.getElementById(serviceMap[service]);
+    if (element) element.textContent = count;
+  });
 }
+
+// ... (keep all existing code until importCSV function)
+
+// Import CSV - FIXED VERSION
+function importCSV() {
+  const fileInput = document.getElementById('csvFileInput');
+  if (!fileInput || !fileInput.files.length) {
+    showToast('Please select a CSV file', 'warning');
+    return;
+  }
+  
+  const file = fileInput.files[0];
+  const reader = new FileReader();
+  
+  reader.onload = function(e) {
+    try {
+      const csv = e.target.result;
+      const lines = csv.split('\n');
+      const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));
+      
+      const newLeads = [];
+      for (let i = 1; i < lines.length; i++) {
+        if (lines[i].trim()) {
+          const values = parseCSVLine(lines[i]);
+          const row = {};
+          
+          // Map headers to values
+          headers.forEach((header, index) => {
+            row[header] = values[index] || '';
+          });
+          
+          // Normalize and map data
+          const lead = {
+            id: Date.now() + i,
+            businessName: row["Business Name"] || row["businessName"] || '',
+            contactPerson: row["Contact Person"] || row["contactPerson"] || '',
+            phoneNumber: row["Phone Number"] || row["phoneNumber"] || '',
+            whatsappNumber: row["WhatsApp Number"] || row["whatsappNumber"] || row["Phone Number"] || row["phoneNumber"] || '',
+            email: row["Email"] || row["email"] || '',
+            category: row["Category"] || row["category"] || 'Other',
+            location: row["Location"] || row["location"] || '',
+            googleMapsLink: row["Google Maps Link"] || row["googleMapsLink"] || '',
+            websiteAvailable: row["Website Available"] || row["websiteAvailable"] || '',
+            services: parseServices(row["Services"] || row["Required Services"] || row["services"] || ''),
+            budget: row["Budget"] || row["budget"] || '',
+            leadStatus: normalizeStatus(row["Lead Status"] || row["Status"] || row["leadStatus"] || 'New Lead'),
+            followupDate: row["Follow-up Date"] || row["followupDate"] || '',
+            followupTime: row["Follow-up Time"] || row["followupTime"] || '',
+            notes: row["Notes"] || row["notes"] || '',
+            createdAt: new Date().toISOString(),
+            addedBy: row["Added By"] || row["addedBy"] || currentUser.name,
+            addedByRole: row["Added By Role"] || row["addedByRole"] || currentUser.role
+          };
+          
+          // Check for duplicates
+          if (!leads.some(l => l.phoneNumber === lead.phoneNumber)) {
+            newLeads.push(lead);
+          }
+        }
+      }
+      
+      if (newLeads.length > 0) {
+        leads.push(...newLeads);  // FIXED: Use spread operator
+        saveDataToLocalStorage();
+        refreshAllData();  // FIXED: Call refresh after import
+        showToast(`Successfully imported ${newLeads.length} leads!`, 'success');
+      } else {
+        showToast('No new leads to import (duplicates or empty data)', 'warning');
+      }
+      
+      fileInput.value = '';
+    } catch (error) {
+      showToast('Error importing CSV file', 'error');
+      console.error('Import error:', error);
+    }
+  };
+  
+  reader.readAsText(file);
+}
+
+// ... (keep all remaining code)
 
 // Update export/import page
 function updateExportImportPage() {
@@ -1012,14 +1408,29 @@ function clearAllData() {
     }
 }
 
-// Refresh all data
+// Refresh all data - FIXED VERSION
 function refreshAllData() {
-    updateDashboard();
-    renderLeadsTable();
-    renderFollowups();
-    updateCategoriesPage();
-    updateServicesPage();
-    updateSettingsPage();
+    if (document.getElementById('dashboard-page').classList.contains('active')) {
+        updateDashboard();
+    }
+    if (document.getElementById('all-leads-page').classList.contains('active')) {
+        renderLeadsTable();
+    }
+    if (document.getElementById('follow-ups-page').classList.contains('active')) {
+        renderFollowups();
+    }
+    if (document.getElementById('categories-page').classList.contains('active')) {
+        updateCategoriesPage();
+    }
+    if (document.getElementById('services-page').classList.contains('active')) {
+        updateServicesPage();
+    }
+    if (document.getElementById('export-import-page').classList.contains('active')) {
+        updateExportImportPage();
+    }
+    if (document.getElementById('settings-page').classList.contains('active')) {
+        updateSettingsPage();
+    }
 }
 
 // Toast notifications
@@ -1054,8 +1465,7 @@ function showToast(message, type = 'success') {
 
 // Close modal
 function closeModal() {
-    const modal = document.getElementById('viewLeadModal');
-    if (modal) {
+    document.querySelectorAll('.modal').forEach(modal => {
         modal.classList.remove('active');
-    }
+    });
 }
