@@ -40,8 +40,14 @@
             <a href="#" data-page="settings" class="nav-item">
                 <i class="fas fa-cog"></i> Settings
             </a>
+            <div class="back-to-office-btn" onclick="window.location.href = 'office.html';">
+                <i class="fas fa-arrow-left"></i> Back to Office
+            </div>
         </nav>
     </div>
+
+    <!-- Sidebar Overlay for Mobile -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
 
     <!-- Main Content -->
     <div class="main-content">
@@ -59,9 +65,9 @@
                     <i class="far fa-calendar"></i>
                     <span id="currentDate"></span>
                 </div>
-                <div class="profile">
+                <div class="profile" id="profileClick">
                     <i class="fas fa-user-circle"></i>
-                    <span>Mohith Admin</span>
+                    <span id="profileName">Admin</span>
                 </div>
             </div>
         </header>
@@ -211,7 +217,7 @@
                         <i class="fas fa-inbox"></i>
                         <p>No leads found</p>
                     </div>
-                    <table class="leads-table">
+                    <table class="leads-table" id="leadsTable">
                         <thead>
                             <tr>
                                 <th>Business Name</th>
@@ -227,6 +233,10 @@
                             <!-- Leads will be populated here -->
                         </tbody>
                     </table>
+                    <!-- Mobile Cards Container -->
+                    <div class="mobile-cards-container" id="mobileCardsContainer" style="display: none;">
+                        <!-- Mobile cards will be populated here -->
+                    </div>
                 </div>
             </div>
 
@@ -823,6 +833,99 @@
                     </div>
                     <div class="modal-body" id="viewLeadBody">
                         <!-- Lead details will be populated here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Team Member Login Modal -->
+            <div class="modal" id="teamLoginModal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2>Welcome to KodingWala CRM</h2>
+                        <button class="close-modal" onclick="closeTeamLoginModal()">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="teamLoginForm">
+                            <div class="form-group">
+                                <label>Team Member Name *</label>
+                                <input type="text" name="teamName" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Role / Designation *</label>
+                                <select name="teamRole" required>
+                                    <option value="">Select Role</option>
+                                    <option value="Admin">Admin</option>
+                                    <option value="Customer Support">Customer Support</option>
+                                    <option value="Lead Caller">Lead Caller</option>
+                                    <option value="Digital Marketing Executive">Digital Marketing Executive</option>
+                                    <option value="Designer">Designer</option>
+                                    <option value="Developer">Developer</option>
+                                    <option value="Team Member">Team Member</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                Continue to CRM
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Welcome Modal -->
+            <div class="modal" id="welcomeModal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2>Welcome to KodingWala CRM</h2>
+                    </div>
+                    <div class="modal-body">
+                        <p id="welcomeMessage"></p>
+                        <button class="btn btn-primary" onclick="closeWelcomeModal()">
+                            Start Working
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Change Modal -->
+            <div class="modal" id="profileModal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2>Change Profile</h2>
+                        <button class="close-modal" onclick="closeProfileModal()">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="profileForm">
+                            <div class="form-group">
+                                <label>Name</label>
+                                <input type="text" name="profileName" id="profileNameInput">
+                            </div>
+                            <div class="form-group">
+                                <label>Role</label>
+                                <select name="profileRole" id="profileRoleInput">
+                                    <option value="Admin">Admin</option>
+                                    <option value="Customer Support">Customer Support</option>
+                                    <option value="Lead Caller">Lead Caller</option>
+                                    <option value="Digital Marketing Executive">Digital Marketing Executive</option>
+                                    <option value="Designer">Designer</option>
+                                    <option value="Developer">Developer</option>
+                                    <option value="Team Member">Team Member</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            <div class="form-buttons">
+                                <button type="submit" class="btn btn-primary">
+                                    Save Profile
+                                </button>
+                                <button type="button" class="btn btn-secondary" onclick="resetProfile()">
+                                    Reset Profile
+                                </button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
